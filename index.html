@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Wingo Step Calculator</title>
     
-    <!-- ফন্ট ইমপোর্ট (Orbitron & Hind Siliguri) -->
+    <!-- ফন্ট ইমপোর্ট -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- আইকন -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -32,7 +32,7 @@
         }
         
         .header h3 {
-            color: #ffd700; /* গোল্ডেন */
+            color: #ffd700;
             font-size: 20px;
             font-weight: 600;
             letter-spacing: 1px;
@@ -40,7 +40,7 @@
         }
 
         .header h1 {
-            color: #ff9f43; /* অরেঞ্জ */
+            color: #ff9f43;
             font-family: 'Orbitron', sans-serif;
             font-size: 32px;
             font-weight: 900;
@@ -109,7 +109,7 @@
             margin-top: 30px;
             border-radius: 12px;
             overflow: hidden;
-            display: none; /* প্রথমে লুকানো থাকবে */
+            display: none;
             border: 1px solid #1e2746;
             box-shadow: 0 0 25px rgba(41, 182, 246, 0.15);
             margin-bottom: 100px;
@@ -142,12 +142,12 @@
         }
 
         /* কালার স্কিম */
-        .step-num { color: #d500f9; font-family: 'Orbitron', sans-serif; } /* বেগুনি */
-        .bet-amt { color: #fff; font-family: 'Poppins', sans-serif; } /* সাদা */
+        .step-num { color: #d500f9; font-family: 'Orbitron', sans-serif; }
+        .bet-amt { color: #fff; font-family: 'Poppins', sans-serif; }
 
         tr:nth-child(even) { background-color: #161e31; }
 
-        /* টেলিগ্রাম বাটন (নিচে ফিক্সড) */
+        /* টেলিগ্রাম বাটন */
         .telegram-float {
             position: fixed;
             bottom: 25px;
@@ -203,7 +203,7 @@
                 </tr>
             </thead>
             <tbody id="table-body">
-                <!-- জাভাস্ক্রিপ্ট দিয়ে ডাটা আসবে -->
+                <!-- Data will appear here -->
             </tbody>
         </table>
     </div>
@@ -218,7 +218,6 @@
             let capitalInput = document.getElementById('capital').value;
             let stepsInput = document.getElementById('steps').value;
             
-            // খালি ঘর চেক করা
             if (capitalInput === "" || stepsInput === "") {
                 alert("দয়া করে টাকার পরিমাণ এবং স্টেপ সংখ্যা লিখুন!");
                 return;
@@ -232,36 +231,34 @@
                 return;
             }
 
-            // টেবিল শো করা
             document.getElementById('result-box').style.display = 'block';
             let tbody = document.getElementById('table-body');
             tbody.innerHTML = "";
 
-            // সঠিক ক্যালকুলেশন সূত্র (পয়সা সহ)
-            // সূত্র: StartBet = Capital / (2^Steps - 1)
+            // সঠিক সূত্র: Capital / (2^Steps - 1)
             let divisor = Math.pow(2, steps) - 1;
-            let startBet = capital / divisor; 
+            let rawStart = capital / divisor; 
             
-            // বেট যদি ১ টাকার কম হয়, তবে ১ টাকা সেট হবে
+            // আপনার লজিক: যদি ৩.৯৪ হয় তবে ৪ ধরবে। এজন্য Math.round() ব্যবহার করা হলো
+            // এটি ৩.১ কে ৩ এবং ৩.৬ কে ৪ বানাবে।
+            let startBet = Math.round(rawStart);
+
+            // সর্বনিম্ন বেট ১ টাকা হতে হবে
             if(startBet < 1) startBet = 1;
 
             let currentBet = startBet;
-            let totalBet = 0;
 
             for (let i = 1; i <= steps; i++) {
-                // পয়সা দেখানোর জন্য toFixed(2) ব্যবহার করা হয়েছে
-                let displayBet = currentBet % 1 === 0 ? currentBet : currentBet.toFixed(2);
-                
                 let row = `
                     <tr>
                         <td class="step-num">${i}</td>
-                        <td class="bet-amt">${displayBet} ৳</td>
+                        <td class="bet-amt">${currentBet} ৳</td>
                     </tr>
                 `;
                 tbody.innerHTML += row;
 
-                totalBet += currentBet;
-                currentBet = currentBet * 2; // পরবর্তী স্টেপে দ্বিগুণ
+                // প্রতি স্টেপে দ্বিগুণ হবে (Integer Value)
+                currentBet = currentBet * 2; 
             }
         }
     </script>
